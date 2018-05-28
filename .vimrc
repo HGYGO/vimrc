@@ -382,6 +382,7 @@ set cscopequickfix=t-
 "nmap <silent> <leader>s <ESC>:lcs f s <c-r><c-w><cr>:lw<cr>
 "command! -nargs=+ -complete=dir FindFiles :call FindFiles(<f-args>)
 let g:GtagsCscope_Auto_Load=1
+let GtagsCscope_Quiet = 1
 let g:GtagsCscope_Keep_Alive=1
 let g:GtagsCscope_Absolute_Path=1
 "let g:Gtags_Auto_Update=1
