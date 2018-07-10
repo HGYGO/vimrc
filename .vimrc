@@ -759,5 +759,5 @@ let g:buffergator_autodismiss_on_select = 0
 let g:buffergator_autoupdate = 1
 let g:buffergator_hsplit_size = 20
 
-nmap bd :exe "bd".bufnr('%')<CR>
+nmap bd :let num = bufnr('%') <BAR> bn <BAR> exe "bd".num <CR>
 
