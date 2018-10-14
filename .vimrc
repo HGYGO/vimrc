@@ -1,13 +1,18 @@
 let mapleader=","
 
-"Plugins {{{
+if !executable('global')
+	silent !sudo apt-get install global
+endif
+
+"Plugs {{{
 let iCanHazVundle=1
-let vundle_readme=expand('~/.vim/bundle/Vundle.vim/README.md')
+let vundle_readme=expand('~/.vim/autoload/plug.vim')
 if !filereadable(vundle_readme)
 	echo "Installing Vundle.."
 	echo ""
-	silent !mkdir -p ~/.vim/bundle
-	silent !git clone https://github.com/VundleVim/Vundle.vim ~/.vim/bundle/Vundle.vim
+	"silent !mkdir -p ~/.vim/autoload/plug.vim
+	"silent !git clone https://github.com/VundleVim/Vundle.vim ~/.vim/bundle/Vundle.vim
+	silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	let iCanHazVundle=0
 endif
 
@@ -18,69 +23,68 @@ set nocompatible              " 去除VI一致性,必须
 filetype off                  " 必须
 
 " 设置包括vundle和初始化相关的runtime path
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call plug#begin('~/.vim/plugged')
 " 另一种选择, 指定一个vundle安装插件的路径
 "call vundle#begin('~/some/path/here')
 " 让vundle管理插件版本,必须
-Plugin 'VundleVim/Vundle.vim'
-" Plugin 'Valloric/YouCompleteMe'
-"Plugin 'file:///~/.vim/bundle/YouCompleteMe'
-"Plugin 'rdnetto/YCM-Generator'
-"Plugin 'mru.vim'	"Replaced by LeaderF
-Plugin 'scrooloose/nerdtree'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'jistr/vim-nerdtree-tabs'
-"Plugin 'Xuyuanp/nerdtree-git-plugin'
-"Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
-Plugin 'scrooloose/syntastic'
-"Plugin 'Valloric/ListToggle'
-"Plugin 'SirVer/ultisnips'
-Plugin 'majutsushi/tagbar'
-"Plugin 'Lokaltog/vim-powerline'
-"Plugin 'vim-airline/vim-airline'
-Plugin 'kien/rainbow_parentheses.vim'
-Plugin 'nathanaelkane/vim-indent-guides'
-Plugin 'bronson/vim-trailing-whitespace'
-Plugin 'xolox/vim-misc'
-Plugin 'xolox/vim-session'
-"Plugin	'thaerkh/vim-workspace'
-"Plugin 'ryanoasis/vim-devicons'
-"Plugin 'wting/gitsessions.vim'
-"Plugin 'ToruIwashita/git-switcher.vim'
-Plugin 'vim-scripts/a.vim'
-Plugin 'tpope/vim-fugitive.git'
-"Plugin 'neoclide/vim-easygit'
-"Plugin 'airblade/vim-gitgutter.git'
-"Plugin 'amiorin/vim-project'
-Plugin 'Yggdroot/LeaderF'
-"Plugin 'roman/golden-ratio'	"Resize window automatically
-"Plugin 'jlanzarotta/bufexplorer'
+Plug 'VundleVim/Vundle.vim'
+" Plug 'Valloric/YouCompleteMe'
+"Plug 'file:///~/.vim/bundle/YouCompleteMe'
+"Plug 'rdnetto/YCM-Generator'
+"Plug 'mru.vim'	"Replaced by LeaderF
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'jistr/vim-nerdtree-tabs'
+"Plug 'Xuyuanp/nerdtree-git-plugin'
+"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'scrooloose/syntastic'
+"Plug 'Valloric/ListToggle'
+"Plug 'SirVer/ultisnips'
+Plug 'majutsushi/tagbar'
+"Plug 'Lokaltog/vim-powerline'
+"Plug 'vim-airline/vim-airline'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'bronson/vim-trailing-whitespace'
+Plug 'xolox/vim-misc'
+"Plug 'xolox/vim-session'
+"Plug	'thaerkh/vim-workspace'
+"Plug 'ryanoasis/vim-devicons'
+"Plug 'wting/gitsessions.vim'
+"Plug 'ToruIwashita/git-switcher.vim'
+Plug 'vim-scripts/a.vim'
+Plug 'tpope/vim-fugitive.git'
+"Plug 'neoclide/vim-easygit'
+"Plug 'airblade/vim-gitgutter.git'
+"Plug 'amiorin/vim-project'
+Plug 'Yggdroot/LeaderF'
+"Plug 'roman/golden-ratio'	"Resize window automatically
+"Plug 'jlanzarotta/bufexplorer'
 
-"Plugin 'vimplugin/project.vim'
-"Plugin 'ervandew/screen'
-"Plugin 'oplatek/Conque-Shell'
-Plugin 'MattesGroeger/vim-bookmarks'
-"Plugin 'fholgado/minibufexpl.vim'
-Plugin 'ap/vim-buftabline'
-"Plugin 'zefei/vim-wintabs'
-"Plugin 'jeetsukumaran/vim-buffergator'
+"Plug 'vimplugin/project.vim'
+"Plug 'ervandew/screen'
+"Plug 'oplatek/Conque-Shell'
+Plug 'MattesGroeger/vim-bookmarks'
+"Plug 'fholgado/minibufexpl.vim'
+Plug 'ap/vim-buftabline'
+"Plug 'zefei/vim-wintabs'
+"Plug 'jeetsukumaran/vim-buffergator'
 
 "###### Color Themes #######
-"Plugin 'chxuan/change-colorscheme'	"Replaced by LeaderF
-"Plugin 'javier-lopez/nextCS.vim'	"Replaced by LeaderF
-Plugin 'fugalh/desert.vim'
-Plugin 'tomasr/molokai'
-"Plugin 'vim-airline/vim-airline-themes'
-Plugin 'SpaceVim/gtags.vim'
+"Plug 'chxuan/change-colorscheme'	"Replaced by LeaderF
+"Plug 'javier-lopez/nextCS.vim'	"Replaced by LeaderF
+Plug 'fugalh/desert.vim'
+Plug 'tomasr/molokai'
+"Plug 'vim-airline/vim-airline-themes'
+Plug 'SpaceVim/gtags.vim'
 
 if iCanHazVundle == 0
 	echo "Installing Vundles, please ignore key map error messages"
 	echo ""
-	:BundleInstall
+	:PlugInstall
 endif
 
-call vundle#end()            " 必须
+call plug#end()            " 必须
 filetype plugin indent on    " 必须 加载vim自带和插件相应的语法和文件类型相关脚本
 " 忽视插件改变缩进,可以使用以下替代:
 filetype plugin on
@@ -477,7 +481,7 @@ map <leader><leader>d	:DeleteSession<CR>
 "### The `:ViewSession` command
 map <leader><leader>v	:ViewSession<CR>
 
-"augroup PluginSession
+"augroup PlugSession
   "autocmd!
   "au VimEnter * nested call xolox#session#auto_load()
   "au VimLeavePre bash\ -* q
