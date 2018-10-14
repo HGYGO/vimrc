@@ -72,6 +72,7 @@ Plugin 'ap/vim-buftabline'
 Plugin 'fugalh/desert.vim'
 Plugin 'tomasr/molokai'
 "Plugin 'vim-airline/vim-airline-themes'
+Plugin 'SpaceVim/gtags.vim'
 
 if iCanHazVundle == 0
 	echo "Installing Vundles, please ignore key map error messages"
@@ -691,6 +692,7 @@ set   cursorline  "show cursor line
 set   completeopt=longest,menuone
 set   noexpandtab
 set   fileencodings=utf-8,gb2312,gbk,gb18030,ucs-bom,utf-8,prc
+set	  modifiable
 set   fileformat=unix
 set   foldenable
 set   foldmethod=marker
@@ -719,6 +721,7 @@ set   smartindent
 set   smartcase
 set   tabstop=4
 set   termencoding=utf-8
+set   encoding=utf-8
 "set   textwidth=80
 set   ww=h,l
 "set   wildignore=*.bak,*.o,*.e,*~
