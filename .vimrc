@@ -335,77 +335,89 @@ let g:extra_whitespace_ignored_filetypes = ['bash*']
 "}}}
 
 " GNU_GLOBAL {{{1
+"
+" enable gtags module
+let g:gutentags_modules = ['ctags', 'gtags_cscope']
 
-nmap <leader>sa :cs add cscope.out<cr>
-nmap <leader>ss :cs find s <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>sg :cs find g <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>sc :cs find c <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>st :cs find t <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>se :cs find e <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>sf :cs find f <C-R>=expand("<cfile>")<cr><cr>
-nmap <leader>si :cs find i <C-R>=expand("<cfile>")<cr><cr>
-nmap <leader>sii :cs find i %<cr>
-"nmap <leader>sd :cs find d <C-R>=expand("<cword>")<cr><cr>
+" config project root markers.
+let g:gutentags_project_root = ['.root']
 
-"To enable C+S, Add "stty -ixon" to ~/.bashrc
-nmap <C-s> ,ss
-nmap <C-g> ,sg
-nmap <C-c> ,sc
-"nmap <C-s> :silent call setqflist([])<cr>,ss:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
-"nmap <C-g> :silent call setqflist([])<cr>,sg:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
-"nmap <C-c> :silent call setqflist([])<cr>,sc:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
-"nmap <C-t> ,st
+" generate datebases in my cache directory, prevent gtags files polluting my project
+let g:gutentags_cache_dir = expand('~/.cache/tags')
 
-cmap ,ss cs find s
-cmap ,sg cs find g
-cmap ,sc cs find c
-cmap ,st cs find t
-cmap ,se cs find e
-cmap ,sf cs find f
-cmap ,si cs find i
-"cmap ,sd cs find d
+" forbid gutentags adding gtags databases
+let g:gutentags_auto_add_gtags_cscope = 1
 
-"Close Quickwindow
-nmap <leader>ccl :ccl<CR>
-nmap <F4> :ccl<CR>
+"nmap <leader>sa :cs add cscope.out<cr>
+"nmap <leader>ss :cs find s <C-R>=expand("<cword>")<cr><cr>
+"nmap <leader>sg :cs find g <C-R>=expand("<cword>")<cr><cr>
+"nmap <leader>sc :cs find c <C-R>=expand("<cword>")<cr><cr>
+"nmap <leader>st :cs find t <C-R>=expand("<cword>")<cr><cr>
+"nmap <leader>se :cs find e <C-R>=expand("<cword>")<cr><cr>
+"nmap <leader>sf :cs find f <C-R>=expand("<cfile>")<cr><cr>
+"nmap <leader>si :cs find i <C-R>=expand("<cfile>")<cr><cr>
+"nmap <leader>sii :cs find i %<cr>
+""nmap <leader>sd :cs find d <C-R>=expand("<cword>")<cr><cr>
 
-nmap <leader>gu :GtagsUpdate<CR>
+""To enable C+S, Add "stty -ixon" to ~/.bashrc
+"nmap <C-s> ,ss
+"nmap <C-g> ,sg
+"nmap <C-c> ,sc
+""nmap <C-s> :silent call setqflist([])<cr>,ss:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
+""nmap <C-g> :silent call setqflist([])<cr>,sg:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
+""nmap <C-c> :silent call setqflist([])<cr>,sc:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
+""nmap <C-t> ,st
 
-let g:Gtags_Auto_Update=1
+"cmap ,ss cs find s
+"cmap ,sg cs find g
+"cmap ,sc cs find c
+"cmap ,st cs find t
+"cmap ,se cs find e
+"cmap ,sf cs find f
+"cmap ,si cs find i
+""cmap ,sd cs find d
 
-"autocmd BufWritePost * GtagsUpdate
+""Close Quickwindow
+"nmap <leader>ccl :ccl<CR>
+"nmap <F4> :ccl<CR>
 
-" settings of cscope.
-" I use GNU global instead cscope because global is faster.
-"set cscopetag
-"set cscopeprg=/usr/local/bin/gtags-cscope
-"set csprg=/usr/local/bin/gtags-cscope
-"set cscopequickfix=c-,d-,e-,f-,g-,i-,s-,t-
-set cscopequickfix=t-
-"nmap <silent> <leader>j <ESC>:cstag <c-r><c-w><CR>
-"nmap <silent> <leader>g <ESC>:lcs f c <c-r><c-w><cr>:lw<cr>
-"nmap <silent> <leader>s <ESC>:lcs f s <c-r><c-w><cr>:lw<cr>
-"command! -nargs=+ -complete=dir FindFiles :call FindFiles(<f-args>)
-let g:GtagsCscope_Auto_Load=1
-let GtagsCscope_Quiet = 1
-let g:GtagsCscope_Keep_Alive=1
-let g:GtagsCscope_Absolute_Path=1
+"nmap <leader>gu :GtagsUpdate<CR>
+
 "let g:Gtags_Auto_Update=1
-"let g:Gtags_OpenQuickfixWindow=1
-let g:Gtags_No_Auto_Jump=1
-let g:Gtags_Close_When_Single=0
-"au VimEnter * call VimEnterCallback()
-"au VimEnter * call AddGtags()
-"call AddGtags()
-"autocmd BufAdd *.c,*.cpp,*.h call FindGtags(expand('<afile>'))
 
-"autocmd BufWritePost *.c,*.cpp,*.h call UpdateGtags(expand('<afile>'))
-"map <silent><F12> :call UpdateGtags(expand('<afile>'))
+""autocmd BufWritePost * GtagsUpdate
 
-function! UpdateGtags(f)
-	let dir = fnamemodify(a:f, ':p:h')
-	exe 'silent !cd ' . dir . ' && gtags --single-update % &> /dev/null &'
-endfunction
+"" settings of cscope.
+"" I use GNU global instead cscope because global is faster.
+""set cscopetag
+""set cscopeprg=/usr/local/bin/gtags-cscope
+""set csprg=/usr/local/bin/gtags-cscope
+""set cscopequickfix=c-,d-,e-,f-,g-,i-,s-,t-
+"set cscopequickfix=t-
+""nmap <silent> <leader>j <ESC>:cstag <c-r><c-w><CR>
+""nmap <silent> <leader>g <ESC>:lcs f c <c-r><c-w><cr>:lw<cr>
+""nmap <silent> <leader>s <ESC>:lcs f s <c-r><c-w><cr>:lw<cr>
+""command! -nargs=+ -complete=dir FindFiles :call FindFiles(<f-args>)
+"let g:GtagsCscope_Auto_Load=1
+"let GtagsCscope_Quiet = 1
+"let g:GtagsCscope_Keep_Alive=1
+"let g:GtagsCscope_Absolute_Path=1
+""let g:Gtags_Auto_Update=1
+""let g:Gtags_OpenQuickfixWindow=1
+"let g:Gtags_No_Auto_Jump=1
+"let g:Gtags_Close_When_Single=0
+""au VimEnter * call VimEnterCallback()
+""au VimEnter * call AddGtags()
+""call AddGtags()
+""autocmd BufAdd *.c,*.cpp,*.h call FindGtags(expand('<afile>'))
+
+""autocmd BufWritePost *.c,*.cpp,*.h call UpdateGtags(expand('<afile>'))
+""map <silent><F12> :call UpdateGtags(expand('<afile>'))
+
+"function! UpdateGtags(f)
+	"let dir = fnamemodify(a:f, ':p:h')
+	"exe 'silent !cd ' . dir . ' && gtags --single-update % &> /dev/null &'
+"endfunction
 
 
 "}}}
