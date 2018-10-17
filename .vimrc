@@ -27,7 +27,7 @@ call plug#begin('~/.vim/plugged')
 " 另一种选择, 指定一个vundle安装插件的路径
 "call vundle#begin('~/some/path/here')
 " 让vundle管理插件版本,必须
-Plug 'VundleVim/Vundle.vim'
+" Plug 'VundleVim/Vundle.vim'
 " Plug 'Valloric/YouCompleteMe'
 "Plug 'file:///~/.vim/bundle/YouCompleteMe'
 "Plug 'rdnetto/YCM-Generator'
@@ -66,7 +66,7 @@ Plug 'Yggdroot/LeaderF'
 "Plug 'oplatek/Conque-Shell'
 Plug 'MattesGroeger/vim-bookmarks'
 "Plug 'fholgado/minibufexpl.vim'
-Plug 'ap/vim-buftabline'
+""""""""Plug 'ap/vim-buftabline'
 "Plug 'zefei/vim-wintabs'
 "Plug 'jeetsukumaran/vim-buffergator'
 
@@ -93,76 +93,76 @@ filetype plugin on
 
 color molokai
 
-""TabLine ##################### {{{
-"set showtabline=2
-"set tabline=%!MyTabLine()
+"TabLine ##################### {{{
+set showtabline=2
+set tabline=%!MyTabLine()
 
-"function! MyTabLine()
-	"let s = ''
-	"let a = 0
-	"for i in range(tabpagenr('$'))
-		"if i + 1 == tabpagenr()
-			"let s .= '%#TabLineSel#'
-		"else
-			"if a == 0
-				"let s .= '%#TabLineFill1#'
-				"let a = 1
-			"else
-				"let s .= '%#TabLineFill2#'
-				"let a = 0
-			"endif
-		"endif
-		"let s .= '%' . (i + 1) . 'T'
-		"let s .= ' %{MyShortTabLabel(' . (i + 1) . ')} '
-	"endfor
+function! MyTabLine()
+	let s = ''
+	let a = 0
+	for i in range(tabpagenr('$'))
+		if i + 1 == tabpagenr()
+			let s .= '%#TabLineSel#'
+		else
+			if a == 0
+				let s .= '%#TabLineFill1#'
+				let a = 1
+			else
+				let s .= '%#TabLineFill2#'
+				let a = 0
+			endif
+		endif
+		let s .= '%' . (i + 1) . 'T'
+		let s .= ' %{MyShortTabLabel(' . (i + 1) . ')} '
+	endfor
 
-	"let s .= '%#TabLineOther#%T'
-	"if tabpagenr('$') > 1
-		"let s .= '%=%#TabLine#%999Xclose'
-	"endif
-	"return s
-"endfunction
+	let s .= '%#TabLineOther#%T'
+	if tabpagenr('$') > 1
+		let s .= '%=%#TabLine#%999Xclose'
+	endif
+	return s
+endfunction
 
-"function! MyShortTabLabel(n)
+function! MyShortTabLabel(n)
+  let buflist = tabpagebuflist(a:n)
+  "let label = '<'
+  let label = bufname (buflist[tabpagewinnr (a:n) -1])
+  "let label .= '>'
+  if getbufvar(buflist[tabpagewinnr (a:n) -1], '&modified')
+	let label .= '[+]'
+  endif
+  let filename = fnamemodify (label, ':t')
+  return filename
+endfunction
+
+"function! MyTabLabel(n)
   "let buflist = tabpagebuflist(a:n)
-  ""let label = '<'
-  "let label = bufname (buflist[tabpagewinnr (a:n) -1])
-  ""let label .= '>'
-  "if getbufvar(buflist[tabpagewinnr (a:n) -1], '&modified')
-	"let label .= '[+]'
-  "endif
-  "let filename = fnamemodify (label, ':t')
-  "return filename
+  "let winnr = tabpagewinnr(a:n)
+  "return bufname(buflist[winnr - 1])
 "endfunction
 
-""function! MyTabLabel(n)
-  ""let buflist = tabpagebuflist(a:n)
-  ""let winnr = tabpagewinnr(a:n)
-  ""return bufname(buflist[winnr - 1])
-""endfunction
+
+"  TabLineFill  tab pages line, where there are no labels
+hi TabLineFill1 term=bold
+hi TabLineFill1 ctermfg=white ctermbg=DarkMagenta
+hi TabLineFill1 guifg=#777777
+
+hi TabLineFill2 term=none
+hi TabLineFill2 ctermfg=white ctermbg=DarkCyan
+hi TabLineFill2 guifg=#777777
+"  TabLineSel   tab pages line, active tab page label
+hi TabLineSel term=inverse
+"hi TabLineSel term=none
+hi TabLineSel cterm=none ctermfg=yellow "ctermbg=White
+"hi TabLineSel ctermfg=yellow
+hi TabLineSel gui=none guifg=yellow guibg=Black
+
+hi TabLineOther term=none
+hi TabLineOther ctermfg=black ctermbg=black
+hi TabLineOther guifg=#777777
 
 
-""  TabLineFill  tab pages line, where there are no labels
-"hi TabLineFill1 term=bold
-"hi TabLineFill1 ctermfg=white ctermbg=DarkMagenta
-"hi TabLineFill1 guifg=#777777
-
-"hi TabLineFill2 term=none
-"hi TabLineFill2 ctermfg=white ctermbg=DarkCyan
-"hi TabLineFill2 guifg=#777777
-""  TabLineSel   tab pages line, active tab page label
-"hi TabLineSel term=inverse
-""hi TabLineSel term=none
-"hi TabLineSel cterm=none ctermfg=yellow "ctermbg=White
-""hi TabLineSel ctermfg=yellow
-"hi TabLineSel gui=none guifg=yellow guibg=Black
-
-"hi TabLineOther term=none
-"hi TabLineOther ctermfg=black ctermbg=black
-"hi TabLineOther guifg=#777777
-
-
-""}}}
+"}}}
 
 "NERDTree {{{
 "========= NERDTree.vim =========
@@ -669,13 +669,11 @@ nmap <S-l> <C-W>l
 "inoremap <C-k> <Esc><C-W>k
 "inoremap <C-l> <Esc><C-W>l
 
-"nmap <C-h> :tabp<cr>
-"imap <C-left> <ESC>:tabp<cr>
-"nmap <C-l> :tabn<cr>
-"imap <C-right> <ESC>:tabn<cr>
+nmap <C-h> :tabp<cr>
+imap <C-left> <ESC>:tabp<cr>
+nmap <C-l> :tabn<cr>
+imap <C-right> <ESC>:tabn<cr>
 
-nmap <C-h> :bp<cr>
-nmap <C-l> :bn<cr>
 
 "Remember the last position
 autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
