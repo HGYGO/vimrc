@@ -185,11 +185,11 @@ let g:nerdtree_tabs_open_on_console_startup=1
 let NERDTreeChDirMode=1
 "let NERDTreeQuitOnOpen=1
 let NERDTreeShowHidden=0
-let NERDTreeKeepTreeInNewTab=1
+let NERDTreeKeepTreeInNewTab=0
 nmap  <leader>v :NERDTreeFind<cr>
 "*************NERD_tree****************
-"map  <F2>   :NERDTreeTabsToggle<cr>
-map  <F2>   :NERDTreeMirrorToggle<CR>
+map  <F2>   :NERDTreeTabsToggle<cr>
+"map  <F2>   :NERDTreeMirrorToggle<CR>
 "map <F2> 	:NERDTreeToggle<CR>
 "autocmd vimenter * NERDTree
 "autocmd vimenter * NERDTreeMirrorToggle
@@ -200,7 +200,7 @@ map  <F2>   :NERDTreeMirrorToggle<CR>
 let g:nerdtree_tabs_autoclose = 1
 
 "autocmd BufEnter ". s:NERDTreeBufName ."* :NERDTreeToggle | :NERDTreeToggle
-autocmd BufEnter * NERDTreeMirrorOpen
+"autocmd BufEnter * NERDTreeMirrorOpen
 
 "}}}
 
@@ -680,7 +680,8 @@ autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "norm
 
 
 nmap <leader>vimrc :source ~/.vimrc<cr>
-nmap <leader>ee :call FocuosFileBuffer()<CR>:e ~/.vimrc<cr>
+"nmap <leader>ee :call FocuosFileBuffer()<CR>:e ~/.vimrc<cr>
+nmap <leader>ee :tabnew ~/.vimrc<cr>
 
 "map <F12> 5<C-w>>
 map <F12> :vertical res +5<CR>
