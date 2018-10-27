@@ -76,7 +76,10 @@ Plug 'MattesGroeger/vim-bookmarks'
 Plug 'fugalh/desert.vim'
 Plug 'tomasr/molokai'
 "Plug 'vim-airline/vim-airline-themes'
-Plug 'SpaceVim/gtags.vim'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'skywind3000/gutentags_plus'
+
+Plug 'skywind3000/vim-preview'
 
 if iCanHazVundle == 0
 	echo "Installing Vundles, please ignore key map error messages"
@@ -339,43 +342,71 @@ let g:extra_whitespace_ignored_filetypes = ['bash*']
 " enable gtags module
 let g:gutentags_modules = ['ctags', 'gtags_cscope']
 
-" config project root markers.
+" gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
 let g:gutentags_project_root = ['.root']
 
-" generate datebases in my cache directory, prevent gtags files polluting my project
-let g:gutentags_cache_dir = expand('~/.cache/tags')
+" 所生成的数据文件的名称
+let g:gutentags_ctags_tagfile = '.tags'
 
-" forbid gutentags adding gtags databases
+" 同时开启 ctags 和 gtags 支持：
+let g:gutentags_modules = []
+if executable('ctags')
+	let g:gutentags_modules += ['ctags']
+endif
+if executable('gtags-cscope') && executable('gtags')
+	let g:gutentags_modules += ['gtags_cscope']
+endif
+
+" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
+let s:vim_tags = expand('~/.cache/tags')
+let g:gutentags_cache_dir = s:vim_tags
+
+" 配置 ctags 的参数
+let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
+let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
+let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
+" 如果使用 universal ctags 需要增加下面一行
+let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
+
 let g:gutentags_auto_add_gtags_cscope = 1
 
-"nmap <leader>sa :cs add cscope.out<cr>
-"nmap <leader>ss :cs find s <C-R>=expand("<cword>")<cr><cr>
-"nmap <leader>sg :cs find g <C-R>=expand("<cword>")<cr><cr>
-"nmap <leader>sc :cs find c <C-R>=expand("<cword>")<cr><cr>
-"nmap <leader>st :cs find t <C-R>=expand("<cword>")<cr><cr>
-"nmap <leader>se :cs find e <C-R>=expand("<cword>")<cr><cr>
-"nmap <leader>sf :cs find f <C-R>=expand("<cfile>")<cr><cr>
-"nmap <leader>si :cs find i <C-R>=expand("<cfile>")<cr><cr>
-"nmap <leader>sii :cs find i %<cr>
-""nmap <leader>sd :cs find d <C-R>=expand("<cword>")<cr><cr>
+" 检测 ~/.cache/tags 不存在就新建
+if !isdirectory(s:vim_tags)
+   silent! call mkdir(s:vim_tags, 'p')
+endif
+
+nmap <leader>ss :GscopeFind find s <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>sg :GscopeFind find g <C-R>=expand("<cword>")<cr><cr>
+"Find functions called by this function
+nmap <leader>sd :GscopeFind find g <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>sc :GscopeFind find c <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>st :GscopeFind find t <C-R>=expand("<cword>")<cr><cr>
+"Find this egrep pattern
+nmap <leader>se :GscopeFind find e <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>sf :GscopeFind find f <C-R>=expand("<cfile>")<cr><cr>
+nmap <leader>si :GscopeFind find i <C-R>=expand("<cfile>")<cr><cr>
+"Find places where this symbol is assigned a value
+nmap <leader>sa :GscopeFind find a <C-R>=expand("<cfile>")<cr><cr>
 
 ""To enable C+S, Add "stty -ixon" to ~/.bashrc
-"nmap <C-s> ,ss
-"nmap <C-g> ,sg
-"nmap <C-c> ,sc
-""nmap <C-s> :silent call setqflist([])<cr>,ss:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
-""nmap <C-g> :silent call setqflist([])<cr>,sg:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
-""nmap <C-c> :silent call setqflist([])<cr>,sc:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
-""nmap <C-t> ,st
+nmap <C-s> <leader>ss
+nmap <C-g> <leader>sg
+"nmap <C-d> <leader>sd
+nmap <C-c> <leader>sc
+nmap <C-t> <leader>st
+nmap <C-e> <leader>se
+nmap <C-f> <leader>sf
+"nmap <C-i> <leader>si
+nmap <C-a> <leader>sa
 
-"cmap ,ss cs find s
-"cmap ,sg cs find g
-"cmap ,sc cs find c
-"cmap ,st cs find t
-"cmap ,se cs find e
-"cmap ,sf cs find f
-"cmap ,si cs find i
-""cmap ,sd cs find d
+cmap ,ss GscopeFind find s
+cmap ,sg GscopeFind find g
+cmap ,sc GscopeFind find c
+cmap ,st GscopeFind find t
+cmap ,se GscopeFind find e
+cmap ,sf GscopeFind find f
+cmap ,si GscopeFind find i
+"cmap ,sd cs find d
 
 ""Close Quickwindow
 "nmap <leader>ccl :ccl<CR>
@@ -554,6 +585,11 @@ map <leader>lc :call FocuosFileBuffer()<CR>:LeaderfColorscheme<CR>
 "let g:airline#extensions#tabline#close_symbol = 'close'
 "let g:airline#extensions#tabline#show_close_button = 1
 ""}}}
+
+"{{{ vim-preview
+autocmd FileType qf nnoremap <silent><buffer> p :PreviewQuickfix<cr>
+autocmd FileType qf nnoremap <silent><buffer> P :PreviewClose<cr>
+"}}}
 
 "map <expr><F9> if bufnr("!bash") == -1 <bar> below term ++rows=5 bash <bar> else <bar> echo ggg <bar> endif <CR>
 "map <expr><F9> bufnr("!bash") ==? -1 ? ":call FocuosFileBuffer()<CR>:below term bash<CR>" : ":echo ggg<CR>"
@@ -753,6 +789,7 @@ set   autochdir
 ""set   guitablabel=%t
 "set		splitbelow
 set modifiable
+set switchbuf=useopen,usetab
 syntax on
 
 "}}}
@@ -779,3 +816,47 @@ let g:buffergator_hsplit_size = 20
 
 nmap bd :let num = bufnr('%') <BAR> bn <BAR> exe "bd".num <CR>
 
+function! Terminal_MetaMode(mode)
+    set ttimeout
+    if $TMUX != ''
+        set ttimeoutlen=30
+    elseif &ttimeoutlen > 80 || &ttimeoutlen <= 0
+        set ttimeoutlen=80
+    endif
+    if has('nvim') || has('gui_running')
+        return
+    endif
+    function! s:metacode(mode, key)
+        if a:mode == 0
+            exec "set <M-".a:key.">=\e".a:key
+        else
+            exec "set <M-".a:key.">=\e]{0}".a:key."~"
+        endif
+    endfunc
+    for i in range(10)
+        call s:metacode(a:mode, nr2char(char2nr('0') + i))
+    endfor
+    for i in range(26)
+        call s:metacode(a:mode, nr2char(char2nr('a') + i))
+        call s:metacode(a:mode, nr2char(char2nr('A') + i))
+    endfor
+    if a:mode != 0
+        for c in [',', '.', '/', ';', '[', ']', '{', '}']
+            call s:metacode(a:mode, c)
+        endfor
+        for c in ['?', ':', '-', '_']
+            call s:metacode(a:mode, c)
+        endfor
+    else
+        for c in [',', '.', '/', ';', '{', '}']
+            call s:metacode(a:mode, c)
+        endfor
+        for c in ['?', ':', '-', '_']
+            call s:metacode(a:mode, c)
+        endfor
+    endif
+endfunc
+
+"call Terminal_MetaMode(0)
+
+"map <M-1> :echo 123<CR>
