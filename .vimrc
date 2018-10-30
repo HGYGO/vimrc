@@ -40,7 +40,7 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'scrooloose/syntastic'
 "Plug 'Valloric/ListToggle'
 "Plug 'SirVer/ultisnips'
-Plug 'majutsushi/tagbar'
+"Plug 'majutsushi/tagbar'
 "Plug 'Lokaltog/vim-powerline'
 "Plug 'vim-airline/vim-airline'
 Plug 'kien/rainbow_parentheses.vim'
@@ -76,9 +76,10 @@ Plug 'MattesGroeger/vim-bookmarks'
 Plug 'fugalh/desert.vim'
 Plug 'tomasr/molokai'
 "Plug 'vim-airline/vim-airline-themes'
-Plug 'ludovicchabant/vim-gutentags'
-Plug 'skywind3000/gutentags_plus'
+"Plug 'ludovicchabant/vim-gutentags'
+"Plug 'skywind3000/gutentags_plus'
 
+Plug 'ronakg/quickr-cscope.vim'
 Plug 'skywind3000/vim-preview'
 
 if iCanHazVundle == 0
@@ -304,7 +305,7 @@ let g:tagbar_autofocus = 0
 let g:tagbar_left = 0
 let g:tagbar_width = 25
 let g:tagbar_sort = 0
-autocmd BufRead *.c,*.cpp,*.h tabdo TagbarOpen
+" autocmd BufRead *.c,*.cpp,*.h tabdo TagbarOpen
 "autocmd VimEnter * nested :TagbarOpen
 "}}}
 
@@ -337,123 +338,35 @@ let g:extra_whitespace_ignored_filetypes = ['bash*']
 ":YcmGenerateConfig or :CCGenerateConfig
 "}}}
 
-" GNU_GLOBAL {{{1
-"
-" enable gtags module
-let g:gutentags_modules = ['ctags', 'gtags_cscope']
+"{{{ quickr_cscope
 
-" gutentags 搜索工程目录的标志，碰到这些文件/目录名就停止向上一级目录递归
-let g:gutentags_project_root = ['.root']
+let g:quickr_cscope_keymaps = 0
+let g:quickr_cscope_program = "gtags-cscope"
+let g:quickr_cscope_db_file = "GTAGS"
 
-" 所生成的数据文件的名称
-let g:gutentags_ctags_tagfile = '.tags'
+let g:quickr_cscope_autoload_db = 1
+let g:quickr_cscope_use_qf_g = 1
+nmap <leader>ss <plug>(quickr_cscope_symbols)
+nmap <leader>sg <plug>(quickr_cscope_global)
+nmap <leader>sc <plug>(quickr_cscope_callers)
+nmap <leader>sf <plug>(quickr_cscope_files)
+nmap <leader>si <plug>(quickr_cscope_includes)
+nmap <leader>st <plug>(quickr_cscope_text)
+nmap <leader>se <plug>(quickr_cscope_egrep)
+nmap <leader>sd <plug>(quickr_cscope_functions)
 
-" 同时开启 ctags 和 gtags 支持：
-let g:gutentags_modules = []
-if executable('ctags')
-	let g:gutentags_modules += ['ctags']
-endif
-if executable('gtags-cscope') && executable('gtags')
-	let g:gutentags_modules += ['gtags_cscope']
-endif
+nmap <c-s> <leader>ss
+nmap <c-g> <leader>sg
+nmap <c-c> <leader>sc
+"nmap <c-f> <leader>sf
+"nmap <c-i> <leader>si
+"nmap <c-t> <leader>st
+"nmap <c-e> <leader>se
+"nmap <c-d> <leader>sd
 
-" 将自动生成的 tags 文件全部放入 ~/.cache/tags 目录中，避免污染工程目录
-let s:vim_tags = expand('~/.cache/tags')
-let g:gutentags_cache_dir = s:vim_tags
+autocmd FileType qf nnoremap <silent><buffer> <ESC><ESC> :ccl<cr>
 
-" 配置 ctags 的参数
-let g:gutentags_ctags_extra_args = ['--fields=+niazS', '--extra=+q']
-let g:gutentags_ctags_extra_args += ['--c++-kinds=+px']
-let g:gutentags_ctags_extra_args += ['--c-kinds=+px']
-" 如果使用 universal ctags 需要增加下面一行
-let g:gutentags_ctags_extra_args += ['--output-format=e-ctags']
-
-let g:gutentags_auto_add_gtags_cscope = 1
-
-" 检测 ~/.cache/tags 不存在就新建
-if !isdirectory(s:vim_tags)
-   silent! call mkdir(s:vim_tags, 'p')
-endif
-
-nmap <leader>ss :GscopeFind find s <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>sg :GscopeFind find g <C-R>=expand("<cword>")<cr><cr>
-"Find functions called by this function
-nmap <leader>sd :GscopeFind find g <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>sc :GscopeFind find c <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>st :GscopeFind find t <C-R>=expand("<cword>")<cr><cr>
-"Find this egrep pattern
-nmap <leader>se :GscopeFind find e <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>sf :GscopeFind find f <C-R>=expand("<cfile>")<cr><cr>
-nmap <leader>si :GscopeFind find i <C-R>=expand("<cfile>")<cr><cr>
-"Find places where this symbol is assigned a value
-nmap <leader>sa :GscopeFind find a <C-R>=expand("<cfile>")<cr><cr>
-
-""To enable C+S, Add "stty -ixon" to ~/.bashrc
-nmap <C-s> <leader>ss
-nmap <C-g> <leader>sg
-"nmap <C-d> <leader>sd
-nmap <C-c> <leader>sc
-nmap <C-t> <leader>st
-nmap <C-e> <leader>se
-nmap <C-f> <leader>sf
-"nmap <C-i> <leader>si
-nmap <C-a> <leader>sa
-
-cmap ,ss GscopeFind find s
-cmap ,sg GscopeFind find g
-cmap ,sc GscopeFind find c
-cmap ,st GscopeFind find t
-cmap ,se GscopeFind find e
-cmap ,sf GscopeFind find f
-cmap ,si GscopeFind find i
-"cmap ,sd cs find d
-
-""Close Quickwindow
-"nmap <leader>ccl :ccl<CR>
-"nmap <F4> :ccl<CR>
-
-"nmap <leader>gu :GtagsUpdate<CR>
-
-"let g:Gtags_Auto_Update=1
-
-""autocmd BufWritePost * GtagsUpdate
-
-"" settings of cscope.
-"" I use GNU global instead cscope because global is faster.
-""set cscopetag
-""set cscopeprg=/usr/local/bin/gtags-cscope
-""set csprg=/usr/local/bin/gtags-cscope
-""set cscopequickfix=c-,d-,e-,f-,g-,i-,s-,t-
-"set cscopequickfix=t-
-""nmap <silent> <leader>j <ESC>:cstag <c-r><c-w><CR>
-""nmap <silent> <leader>g <ESC>:lcs f c <c-r><c-w><cr>:lw<cr>
-""nmap <silent> <leader>s <ESC>:lcs f s <c-r><c-w><cr>:lw<cr>
-""command! -nargs=+ -complete=dir FindFiles :call FindFiles(<f-args>)
-"let g:GtagsCscope_Auto_Load=1
-"let GtagsCscope_Quiet = 1
-"let g:GtagsCscope_Keep_Alive=1
-"let g:GtagsCscope_Absolute_Path=1
-""let g:Gtags_Auto_Update=1
-""let g:Gtags_OpenQuickfixWindow=1
-"let g:Gtags_No_Auto_Jump=1
-"let g:Gtags_Close_When_Single=0
-""au VimEnter * call VimEnterCallback()
-""au VimEnter * call AddGtags()
-""call AddGtags()
-""autocmd BufAdd *.c,*.cpp,*.h call FindGtags(expand('<afile>'))
-
-""autocmd BufWritePost *.c,*.cpp,*.h call UpdateGtags(expand('<afile>'))
-""map <silent><F12> :call UpdateGtags(expand('<afile>'))
-
-"function! UpdateGtags(f)
-	"let dir = fnamemodify(a:f, ':p:h')
-	"exe 'silent !cd ' . dir . ' && gtags --single-update % &> /dev/null &'
-"endfunction
-
-
-"}}}
-
-""gitsessions.vim {{{
+"}}}""gitsessions.vim {{{
 
 ""let g:gitsessions_disable_auto_load = 1
 "let g:gitsessions_use_cache = 0
@@ -860,3 +773,5 @@ endfunc
 "call Terminal_MetaMode(0)
 
 "map <M-1> :echo 123<CR>
+
+
