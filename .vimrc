@@ -340,6 +340,18 @@ let g:extra_whitespace_ignored_filetypes = ['bash*']
 
 "{{{ quickr_cscope
 
+
+function! SavePos()
+	"let g:last_pos = getpos('.')
+	let g:save_view = winsaveview()
+endfunction
+
+function! RestorePos()
+	"call setpos('.', g:last_pos)
+	call winrestview(g:save_view)
+endfunction
+
+
 let g:quickr_cscope_keymaps = 0
 let g:quickr_cscope_program = "gtags-cscope"
 let g:quickr_cscope_db_file = "GTAGS"
@@ -365,7 +377,14 @@ nmap <c-c> <leader>sc
 "nmap <c-d> <leader>sd
 
 autocmd FileType qf nnoremap <silent><buffer> <ESC><ESC> :ccl<cr>
+"autocmd BufUnload qf :call FocuosFileBuffer()<cr>
 
+
+autocmd! BufDelete * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Delete quickfix" | endif
+autocmd! BufUnload * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | call FocuosFileBuffer() | endif
+"autocmd! BufEnter * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Enter quickfix" | endif
+autocmd! BufWinLeave * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Winleave quickfix" | endif
+autocmd! BufLeave * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "leaving quickfix" | endif
 "}}}""gitsessions.vim {{{
 
 ""let g:gitsessions_disable_auto_load = 1
