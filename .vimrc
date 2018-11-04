@@ -44,7 +44,8 @@ Plug 'scrooloose/syntastic'
 "Plug 'Lokaltog/vim-powerline'
 "Plug 'vim-airline/vim-airline'
 Plug 'kien/rainbow_parentheses.vim'
-Plug 'nathanaelkane/vim-indent-guides'
+Plug 'Yggdroot/indentLine'
+"Plug 'nathanaelkane/vim-indent-guides'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'xolox/vim-misc'
 "Plug 'xolox/vim-session'
@@ -81,6 +82,9 @@ Plug 'tomasr/molokai'
 
 Plug 'ronakg/quickr-cscope.vim'
 Plug 'skywind3000/vim-preview'
+
+"uses the sign column to indicate added, modified and removed lines in a file that is managed by a version control system
+Plug 'mhinz/vim-signify'
 
 if iCanHazVundle == 0
 	echo "Installing Vundles, please ignore key map error messages"
@@ -313,9 +317,21 @@ let g:tagbar_sort = 0
 let g:Powerline_symbols = 'unicode'
 "}}}
 
-"vim-indent-guides.vim {{{
-hi IndentGuidesOdd  ctermbg=black
-hi IndentGuidesEven ctermbg=darkgrey
+"{{{ indentLine
+"
+let g:indentLine_loaded = 1
+
+let g:indentLine_char = '┆'
+
+let g:indentLine_enabled = 1
+
+let g:indentLine_fileType = ['c', 'cpp']
+
+"let g:indentLine_color_term = 239
+"let g:indentLine_setConceal = 0
+"let g:indentLine_concealcursor = 'inc'
+"let g:indentLine_conceallevel = 2
+
 "}}}
 
 "ultisnips {{{
@@ -380,11 +396,12 @@ autocmd FileType qf nnoremap <silent><buffer> <ESC><ESC> :ccl<cr>
 "autocmd BufUnload qf :call FocuosFileBuffer()<cr>
 
 
-autocmd! BufDelete * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Delete quickfix" | endif
-autocmd! BufUnload * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | call FocuosFileBuffer() | endif
-"autocmd! BufEnter * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Enter quickfix" | endif
-autocmd! BufWinLeave * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Winleave quickfix" | endif
-autocmd! BufLeave * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "leaving quickfix" | endif
+"autocmd! BufDelete * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Delete quickfix" | endif
+"autocmd! BufUnload * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | call FocuosFileBuffer() | endif
+""autocmd! BufEnter * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Enter quickfix" | endif
+"autocmd! BufWinLeave * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Winleave quickfix" | endif
+"autocmd! BufLeave * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "leaving quickfix" | endif
+
 "}}}""gitsessions.vim {{{
 
 ""let g:gitsessions_disable_auto_load = 1
@@ -521,6 +538,20 @@ map <leader>lc :call FocuosFileBuffer()<CR>:LeaderfColorscheme<CR>
 "{{{ vim-preview
 autocmd FileType qf nnoremap <silent><buffer> p :PreviewQuickfix<cr>
 autocmd FileType qf nnoremap <silent><buffer> P :PreviewClose<cr>
+"}}}
+
+"{{{ vim-signify
+
+let g:signify_vcs_list = [ 'git', 'svn' ]
+let g:signify_realtime = 0
+
+"]c   Jump to next hunk.
+"[c   Jump to previous hunk.
+"]C   Jump to last hunk.
+"[C   Jump to first hunk.
+
+
+
 "}}}
 
 "map <expr><F9> if bufnr("!bash") == -1 <bar> below term ++rows=5 bash <bar> else <bar> echo ggg <bar> endif <CR>
