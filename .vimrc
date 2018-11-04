@@ -40,7 +40,7 @@ Plug 'jistr/vim-nerdtree-tabs'
 Plug 'scrooloose/syntastic'
 "Plug 'Valloric/ListToggle'
 "Plug 'SirVer/ultisnips'
-"Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar'
 "Plug 'Lokaltog/vim-powerline'
 "Plug 'vim-airline/vim-airline'
 Plug 'kien/rainbow_parentheses.vim'
@@ -80,7 +80,7 @@ Plug 'tomasr/molokai'
 "Plug 'ludovicchabant/vim-gutentags'
 "Plug 'skywind3000/gutentags_plus'
 
-Plug 'ronakg/quickr-cscope.vim'
+"Plug 'ronakg/quickr-cscope.vim'
 Plug 'skywind3000/vim-preview'
 
 "uses the sign column to indicate added, modified and removed lines in a file that is managed by a version control system
@@ -354,17 +354,34 @@ let g:extra_whitespace_ignored_filetypes = ['bash*']
 ":YcmGenerateConfig or :CCGenerateConfig
 "}}}
 
-"{{{ quickr_cscope
+"{{{ GNU GLOBAL
 
 
 function! SavePos()
 	"let g:last_pos = getpos('.')
+	let g:save_win = winnr()
+	let g:save_buf = bufnr('%')
 	let g:save_view = winsaveview()
 endfunction
 
 function! RestorePos()
 	"call setpos('.', g:last_pos)
+	if g:save_win == ''
+		return
+	endif
+	if winnr() != g:save_win
+		exe g:save_win . 'wincmd w'
+	endif
+	if bufname('%') != g:save_buf
+		exe g:save_buf . 'b'
+	endif
+
 	call winrestview(g:save_view)
+
+	let g:save_win = ''
+	let g:save_buf = ''
+	let g:save_view = ''
+
 endfunction
 
 
@@ -401,6 +418,86 @@ autocmd FileType qf nnoremap <silent><buffer> <ESC><ESC> :ccl<cr>
 ""autocmd! BufEnter * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Enter quickfix" | endif
 "autocmd! BufWinLeave * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Winleave quickfix" | endif
 "autocmd! BufLeave * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "leaving quickfix" | endif
+
+
+"nmap <leader>sa :cs add cscope.out<cr>
+"nmap <leader>ss :cs find s <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>ss :cs find s <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>sg :cs find g <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>sc :cs find c <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>st :cs find t <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>se :cs find e <C-R>=expand("<cword>")<cr><cr>
+nmap <leader>sf :cs find f <C-R>=expand("<cfile>")<cr><cr>
+nmap <leader>si :cs find i <C-R>=expand("<cfile>")<cr><cr>
+nmap <leader>sii :cs find i %<cr>
+"nmap <leader>sd :cs find d <C-R>=expand("<cword>")<cr><cr>
+
+"To enable C+S, Add "stty -ixon" to ~/.bashrc
+nmap <C-s> ,ss
+nmap <C-g> ,sg
+nmap <C-c> ,sc
+"nmap <C-s> :silent call setqflist([])<cr>,ss:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
+"nmap <C-g> :silent call setqflist([])<cr>,sg:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
+"nmap <C-c> :silent call setqflist([])<cr>,sc:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
+"nmap <C-t> ,st
+
+cmap <leader>ss cs find s
+cmap <leader>sg cs find g
+cmap <leader>sc cs find c
+cmap <leader>st cs find t
+cmap <leader>se cs find e
+cmap <leader>sf cs find f
+cmap <leader>si cs find i
+"cmap ,sd cs find d
+
+"Close Quickwindow
+nmap <leader>ccl :ccl<CR>
+nmap <F4> :ccl<CR>
+
+nmap <leader>gu :GtagsUpdate<CR>
+
+"autocmd BufWritePost * GtagsUpdate
+
+" settings of cscope.
+" I use GNU global instead cscope because global is faster.
+"set cscopetag
+"set cscopeprg=/usr/local/bin/gtags-cscope
+"set csprg=/usr/local/bin/gtags-cscope
+set cscopequickfix=c-,d-,e-,f-,g-,i-,s-,t-
+"nmap <silent> <leader>j <ESC>:cstag <c-r><c-w><CR>
+"nmap <silent> <leader>g <ESC>:lcs f c <c-r><c-w><cr>:lw<cr>
+"nmap <silent> <leader>s <ESC>:lcs f s <c-r><c-w><cr>:lw<cr>
+"command! -nargs=+ -complete=dir FindFiles :call FindFiles(<f-args>)
+let g:GtagsCscope_Auto_Load=1
+let GtagsCscope_Quiet = 1
+let g:GtagsCscope_Keep_Alive=1
+let g:GtagsCscope_Absolute_Path=1
+
+let g:Gtags_Auto_Update=1
+let g:Gtags_OpenQuickfixWindow=1
+let g:Gtags_No_Auto_Jump=1
+let g:Gtags_Close_When_Single=0
+"au VimEnter * call VimEnterCallback()
+"au VimEnter * call AddGtags()
+"call AddGtags()
+"autocmd BufAdd *.c,*.cpp,*.h call FindGtags(expand('<afile>'))
+
+"autocmd BufWritePost *.c,*.cpp,*.h call UpdateGtags(expand('<afile>'))
+"map <silent><F12> :call UpdateGtags(expand('<afile>'))
+
+"autocmd QuickFixCmdPre cscope call SavePos()
+autocmd QuickFixCmdPost cscope cwindow
+"autocmd BufReadPost quickfix call RestorePos()
+"autocmd Syntax qf wincmd p
+
+autocmd FileType quickfix nnoremap <silent><buffer> <ESC><ESC> :ccl<cr>
+
+function! UpdateGtags(f)
+	let dir = fnamemodify(a:f, ':p:h')
+	exe 'silent !cd ' . dir . ' && gtags --single-update % &> /dev/null &'
+endfunction
+
+"autocmd BufReadPost quickfix <C-O>
 
 "}}}""gitsessions.vim {{{
 
