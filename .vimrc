@@ -385,34 +385,6 @@ function! RestorePos()
 endfunction
 
 
-let g:quickr_cscope_keymaps = 0
-let g:quickr_cscope_program = "gtags-cscope"
-let g:quickr_cscope_db_file = "GTAGS"
-
-let g:quickr_cscope_autoload_db = 1
-let g:quickr_cscope_use_qf_g = 1
-nmap <leader>ss <plug>(quickr_cscope_symbols)
-nmap <leader>sg <plug>(quickr_cscope_global)
-nmap <leader>sc <plug>(quickr_cscope_callers)
-nmap <leader>sf <plug>(quickr_cscope_files)
-nmap <leader>si <plug>(quickr_cscope_includes)
-nmap <leader>st <plug>(quickr_cscope_text)
-nmap <leader>se <plug>(quickr_cscope_egrep)
-nmap <leader>sd <plug>(quickr_cscope_functions)
-
-nmap <c-s> <leader>ss
-nmap <c-g> <leader>sg
-nmap <c-c> <leader>sc
-"nmap <c-f> <leader>sf
-"nmap <c-i> <leader>si
-"nmap <c-t> <leader>st
-"nmap <c-e> <leader>se
-"nmap <c-d> <leader>sd
-
-autocmd FileType qf nnoremap <silent><buffer> <ESC><ESC> :ccl<cr>
-"autocmd BufUnload qf :call FocuosFileBuffer()<cr>
-
-
 "autocmd! BufDelete * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Delete quickfix" | endif
 "autocmd! BufUnload * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | call FocuosFileBuffer() | endif
 ""autocmd! BufEnter * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Enter quickfix" | endif
