@@ -80,7 +80,7 @@ Plug 'tomasr/molokai'
 "Plug 'ludovicchabant/vim-gutentags'
 "Plug 'skywind3000/gutentags_plus'
 
-"Plug 'ronakg/quickr-cscope.vim'
+Plug 'ronakg/quickr-cscope.vim'
 Plug 'skywind3000/vim-preview'
 
 "uses the sign column to indicate added, modified and removed lines in a file that is managed by a version control system
@@ -356,33 +356,42 @@ let g:extra_whitespace_ignored_filetypes = ['bash*']
 
 "{{{ GNU GLOBAL
 
+let g:quickr_cscope_keymaps = 0
+let g:quickr_cscope_program = "gtags-cscope"
+let g:quickr_cscope_db_file = "GTAGS"
 
-function! SavePos()
-	"let g:last_pos = getpos('.')
-	let g:save_win = winnr()
-	let g:save_buf = bufnr('%')
-	let g:save_view = winsaveview()
-endfunction
+let g:quickr_cscope_autoload_db = 1
+let g:quickr_cscope_use_qf_g = 1
 
-function! RestorePos()
-	"call setpos('.', g:last_pos)
-	if g:save_win == ''
-		return
-	endif
-	if winnr() != g:save_win
-		exe g:save_win . 'wincmd w'
-	endif
-	if bufname('%') != g:save_buf
-		exe g:save_buf . 'b'
-	endif
+nmap <leader>sg <plug>(quickr_cscope_global)
+nmap <leader>ss <plug>(quickr_cscope_symbols)
+nmap <leader>sc <plug>(quickr_cscope_callers)
+nmap <leader>sf <plug>(quickr_cscope_files)
+nmap <leader>si <plug>(quickr_cscope_includes)
+nmap <leader>st <plug>(quickr_cscope_text)
+nmap <leader>sd <plug>(quickr_cscope_functions)
+nmap <leader>se <plug>(quickr_cscope_egrep)
 
-	call winrestview(g:save_view)
+vmap <leader>sg <plug>(quickr_cscope_global)
+vmap <leader>ss <plug>(quickr_cscope_symbols)
+vmap <leader>sc <plug>(quickr_cscope_callers)
+vmap <leader>sf <plug>(quickr_cscope_files)
+vmap <leader>si <plug>(quickr_cscope_includes)
+vmap <leader>st <plug>(quickr_cscope_text)
+vmap <leader>sd <plug>(quickr_cscope_functions)
+vmap <leader>se <plug>(quickr_cscope_egrep)
 
-	let g:save_win = ''
-	let g:save_buf = ''
-	let g:save_view = ''
+nmap <c-s> <leader>ss
+nmap <c-g> <leader>sg
+nmap <c-c> <leader>sc
+"nmap <c-f> <leader>sf
+"nmap <c-i> <leader>si
+"nmap <c-t> <leader>st
+"nmap <c-e> <leader>se
+"nmap <c-d> <leader>sd
 
-endfunction
+autocmd FileType qf nnoremap <silent><buffer> <ESC><ESC> :ccl<cr>
+"autocmd BufUnload qf :call FocuosFileBuffer()<cr>
 
 
 "autocmd! BufDelete * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "Delete quickfix" | endif
@@ -392,35 +401,14 @@ endfunction
 "autocmd! BufLeave * if getbufvar(bufnr(expand('<afile>')), '&buftype') ==# 'quickfix' | echo "leaving quickfix" | endif
 
 
-"nmap <leader>sa :cs add cscope.out<cr>
-"nmap <leader>ss :cs find s <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>ss :cs find s <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>sg :cs find g <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>sc :cs find c <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>st :cs find t <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>se :cs find e <C-R>=expand("<cword>")<cr><cr>
-nmap <leader>sf :cs find f <C-R>=expand("<cfile>")<cr><cr>
-nmap <leader>si :cs find i <C-R>=expand("<cfile>")<cr><cr>
-nmap <leader>sii :cs find i %<cr>
-"nmap <leader>sd :cs find d <C-R>=expand("<cword>")<cr><cr>
+
 
 "To enable C+S, Add "stty -ixon" to ~/.bashrc
-nmap <C-s> ,ss
-nmap <C-g> ,sg
-nmap <C-c> ,sc
 "nmap <C-s> :silent call setqflist([])<cr>,ss:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
 "nmap <C-g> :silent call setqflist([])<cr>,sg:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
 "nmap <C-c> :silent call setqflist([])<cr>,sc:NERDTreeClose<cr>:copen 15<cr><c-w>k<c-o><c-w>j
 "nmap <C-t> ,st
 
-cmap <leader>ss cs find s
-cmap <leader>sg cs find g
-cmap <leader>sc cs find c
-cmap <leader>st cs find t
-cmap <leader>se cs find e
-cmap <leader>sf cs find f
-cmap <leader>si cs find i
-"cmap ,sd cs find d
 
 "Close Quickwindow
 nmap <leader>ccl :ccl<CR>
@@ -435,15 +423,15 @@ nmap <leader>gu :GtagsUpdate<CR>
 "set cscopetag
 "set cscopeprg=/usr/local/bin/gtags-cscope
 "set csprg=/usr/local/bin/gtags-cscope
-set cscopequickfix=c-,d-,e-,f-,g-,i-,s-,t-
+"set cscopequickfix=c-,d-,e-,f-,g-,i-,s-,t-
 "nmap <silent> <leader>j <ESC>:cstag <c-r><c-w><CR>
 "nmap <silent> <leader>g <ESC>:lcs f c <c-r><c-w><cr>:lw<cr>
 "nmap <silent> <leader>s <ESC>:lcs f s <c-r><c-w><cr>:lw<cr>
 "command! -nargs=+ -complete=dir FindFiles :call FindFiles(<f-args>)
-let g:GtagsCscope_Auto_Load=1
-let GtagsCscope_Quiet = 1
-let g:GtagsCscope_Keep_Alive=1
-let g:GtagsCscope_Absolute_Path=1
+"let g:GtagsCscope_Auto_Load=1
+"let GtagsCscope_Quiet = 1
+"let g:GtagsCscope_Keep_Alive=1
+"let g:GtagsCscope_Absolute_Path=1
 
 let g:Gtags_Auto_Update=1
 let g:Gtags_OpenQuickfixWindow=1
@@ -458,11 +446,11 @@ let g:Gtags_Close_When_Single=0
 "map <silent><F12> :call UpdateGtags(expand('<afile>'))
 
 "autocmd QuickFixCmdPre cscope call SavePos()
-autocmd QuickFixCmdPost cscope cwindow
+"autocmd QuickFixCmdPost cscope cwindow
 "autocmd BufReadPost quickfix call RestorePos()
 "autocmd Syntax qf wincmd p
 
-autocmd FileType quickfix nnoremap <silent><buffer> <ESC><ESC> :ccl<cr>
+"autocmd FileType quickfix nnoremap <silent><buffer> <ESC><ESC> :ccl<cr>
 
 function! UpdateGtags(f)
 	let dir = fnamemodify(a:f, ':p:h')
