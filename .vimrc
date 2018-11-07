@@ -82,6 +82,7 @@ Plug 'tomasr/molokai'
 
 Plug 'ronakg/quickr-cscope.vim'
 Plug 'skywind3000/vim-preview'
+Plug 'HGYGO/gtags.vim'
 
 "uses the sign column to indicate added, modified and removed lines in a file that is managed by a version control system
 Plug 'mhinz/vim-signify'
