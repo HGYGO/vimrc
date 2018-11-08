@@ -361,8 +361,31 @@ let g:quickr_cscope_keymaps = 0
 let g:quickr_cscope_program = "gtags-cscope"
 let g:quickr_cscope_db_file = "GTAGS"
 
-let g:quickr_cscope_autoload_db = 1
+let g:quickr_cscope_autoload_db = 0
 let g:quickr_cscope_use_qf_g = 1
+
+function! s:autoload_db()
+    " Add any database in current directory or any parent
+    "call s:debug_echo('Looking for the database file: ' . g:quickr_cscope_db_file)
+    let db = findfile(g:quickr_cscope_db_file, '.;')
+
+	echomsg "db file: " . db
+
+    if !empty(db)
+        "call s:debug_echo('Database file found at: ' . db)
+        let &csprg=g:quickr_cscope_program
+        "call s:debug_echo('Trying to add the database file for program: ' . g:quickr_cscope_program)
+        silent! execute "cs add " . db . " . -a"
+		"echomsg "cs add " . db . "success"
+        return 1
+    else
+		"echomsg "cs add " . db . "failed"
+        "call s:debug_echo('Database file not found.')
+        return 0
+    endif
+endfunction
+
+autocmd VimEnter * call s:autoload_db()
 
 nmap <leader>sg <plug>(quickr_cscope_global)
 nmap <leader>ss <plug>(quickr_cscope_symbols)
