@@ -54,7 +54,7 @@ Plug 'xolox/vim-misc'
 "Plug 'wting/gitsessions.vim'
 "Plug 'ToruIwashita/git-switcher.vim'
 Plug 'vim-scripts/a.vim'
-Plug 'tpope/vim-fugitive.git'
+Plug 'tpope/vim-fugitive'
 "Plug 'neoclide/vim-easygit'
 "Plug 'airblade/vim-gitgutter.git'
 "Plug 'amiorin/vim-project'
@@ -80,12 +80,16 @@ Plug 'tomasr/molokai'
 "Plug 'ludovicchabant/vim-gutentags'
 "Plug 'skywind3000/gutentags_plus'
 
-Plug 'ronakg/quickr-cscope.vim'
+"Plug 'ronakg/quickr-cscope.vim'
 Plug 'skywind3000/vim-preview'
-Plug 'HGYGO/gtags.vim'
+Plug 'HGYGO/vim-addon'
 
 "uses the sign column to indicate added, modified and removed lines in a file that is managed by a version control system
 Plug 'mhinz/vim-signify'
+"Plug 'webastien/vim-tabs'
+
+"Plug 'Shougo/denite.nvim'
+"Plug 'chemzqm/denite-git'
 
 if iCanHazVundle == 0
 	echo "Installing Vundles, please ignore key map error messages"
@@ -100,75 +104,78 @@ filetype plugin on
 
 "}}}
 
+let g:rehash256 = 1
 color molokai
 
 "TabLine ##################### {{{
-set showtabline=2
-set tabline=%!MyTabLine()
 
-function! MyTabLine()
-	let s = ''
-	let a = 0
-	for i in range(tabpagenr('$'))
-		if i + 1 == tabpagenr()
-			let s .= '%#TabLineSel#'
-		else
-			if a == 0
-				let s .= '%#TabLineFill1#'
-				let a = 1
-			else
-				let s .= '%#TabLineFill2#'
-				let a = 0
-			endif
-		endif
-		let s .= '%' . (i + 1) . 'T'
-		let s .= ' %{MyShortTabLabel(' . (i + 1) . ')} '
-	endfor
+"function! g:MyTabLine()
+	"let s = ''
+	"let a = 0
+	"for i in range(tabpagenr('$'))
+		"if i + 1 == tabpagenr()
+			"let s .= '%#TabLineSel#'
+		"else
+			"if a == 0
+				"let s .= '%#TabLineFill1#'
+				"let a = 1
+			"else
+				"let s .= '%#TabLineFill2#'
+				"let a = 0
+			"endif
+		"endif
+		"let s .= '%' . (i + 1) . 'T'
+		"let s .= ' %{MyShortTabLabel(' . (i + 1) . ')} '
+	"endfor
 
-	let s .= '%#TabLineOther#%T'
-	if tabpagenr('$') > 1
-		let s .= '%=%#TabLine#%999Xclose'
-	endif
-	return s
-endfunction
-
-function! MyShortTabLabel(n)
-  let buflist = tabpagebuflist(a:n)
-  "let label = '<'
-  let label = bufname (buflist[tabpagewinnr (a:n) -1])
-  "let label .= '>'
-  if getbufvar(buflist[tabpagewinnr (a:n) -1], '&modified')
-	let label .= '[+]'
-  endif
-  let filename = fnamemodify (label, ':t')
-  return filename
-endfunction
-
-"function! MyTabLabel(n)
-  "let buflist = tabpagebuflist(a:n)
-  "let winnr = tabpagewinnr(a:n)
-  "return bufname(buflist[winnr - 1])
+	"let s .= '%#TabLineOther#%T'
+	"if tabpagenr('$') > 1
+		"let s .= '%=%#TabLine#%999Xclose'
+	"endif
+	"echomsg "Tabline: " . s
+	"return s
 "endfunction
 
+"function! MyShortTabLabel(n)
+  "let buflist = tabpagebuflist(a:n)
+  ""let label = '<'
+  "let label = bufname (buflist[tabpagewinnr (a:n) -1])
+  ""let label .= '>'
+  "if getbufvar(buflist[tabpagewinnr (a:n) -1], '&modified')
+	"let label .= '[+]'
+  "endif
+  "let filename = fnamemodify (label, ':t')
+  "return filename
+"endfunction
 
-"  TabLineFill  tab pages line, where there are no labels
-hi TabLineFill1 term=bold
-hi TabLineFill1 ctermfg=white ctermbg=DarkMagenta
-hi TabLineFill1 guifg=#777777
+"set showtabline=2
+"set tabline=%g:MyTabLine()
 
-hi TabLineFill2 term=none
-hi TabLineFill2 ctermfg=white ctermbg=DarkCyan
-hi TabLineFill2 guifg=#777777
-"  TabLineSel   tab pages line, active tab page label
-hi TabLineSel term=inverse
-"hi TabLineSel term=none
-hi TabLineSel cterm=none ctermfg=yellow "ctermbg=White
-"hi TabLineSel ctermfg=yellow
-hi TabLineSel gui=none guifg=yellow guibg=Black
+""function! MyTabLabel(n)
+  ""let buflist = tabpagebuflist(a:n)
+  ""let winnr = tabpagewinnr(a:n)
+  ""return bufname(buflist[winnr - 1])
+""endfunction
 
-hi TabLineOther term=none
-hi TabLineOther ctermfg=black ctermbg=black
-hi TabLineOther guifg=#777777
+
+""  TabLineFill  tab pages line, where there are no labels
+"hi TabLineFill1 term=bold
+"hi TabLineFill1 ctermfg=white ctermbg=DarkMagenta
+"hi TabLineFill1 guifg=#777777
+
+"hi TabLineFill2 term=none
+"hi TabLineFill2 ctermfg=white ctermbg=DarkCyan
+"hi TabLineFill2 guifg=#777777
+""  TabLineSel   tab pages line, active tab page label
+"hi TabLineSel term=inverse
+""hi TabLineSel term=none
+"hi TabLineSel cterm=none ctermfg=yellow "ctermbg=White
+""hi TabLineSel ctermfg=yellow
+"hi TabLineSel gui=none guifg=yellow guibg=Black
+
+"hi TabLineOther term=none
+"hi TabLineOther ctermfg=black ctermbg=black
+"hi TabLineOther guifg=#777777
 
 
 "}}}
@@ -361,31 +368,8 @@ let g:quickr_cscope_keymaps = 0
 let g:quickr_cscope_program = "gtags-cscope"
 let g:quickr_cscope_db_file = "GTAGS"
 
-let g:quickr_cscope_autoload_db = 0
+let g:quickr_cscope_autoload_db = 1
 let g:quickr_cscope_use_qf_g = 1
-
-function! s:autoload_db()
-    " Add any database in current directory or any parent
-    "call s:debug_echo('Looking for the database file: ' . g:quickr_cscope_db_file)
-    let db = findfile(g:quickr_cscope_db_file, '.;')
-
-	echomsg "db file: " . db
-
-    if !empty(db)
-        "call s:debug_echo('Database file found at: ' . db)
-        let &csprg=g:quickr_cscope_program
-        "call s:debug_echo('Trying to add the database file for program: ' . g:quickr_cscope_program)
-        silent! execute "cs add " . db . " . -a"
-		"echomsg "cs add " . db . "success"
-        return 1
-    else
-		"echomsg "cs add " . db . "failed"
-        "call s:debug_echo('Database file not found.')
-        return 0
-    endif
-endfunction
-
-autocmd VimEnter * call s:autoload_db()
 
 nmap <leader>sg <plug>(quickr_cscope_global)
 nmap <leader>ss <plug>(quickr_cscope_symbols)
@@ -906,3 +890,4 @@ endfunc
 "map <M-1> :echo 123<CR>
 
 
+autocmd! VimEnter * silent! call s:autoload_db()
