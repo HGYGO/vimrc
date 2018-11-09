@@ -889,5 +889,3 @@ endfunc
 
 "map <M-1> :echo 123<CR>
 
-
-autocmd! VimEnter * silent! call s:autoload_db()
