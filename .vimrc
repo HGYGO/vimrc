@@ -35,8 +35,8 @@ call plug#begin('~/.vim/plugged')
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'jistr/vim-nerdtree-tabs'
-"Plug 'Xuyuanp/nerdtree-git-plugin'
-"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'scrooloose/syntastic'
 "Plug 'Valloric/ListToggle'
 "Plug 'SirVer/ultisnips'
@@ -183,7 +183,8 @@ color molokai
 "NERDTree {{{
 "========= NERDTree.vim =========
 let g:NERDTreeWinPos="left"
-let g:NERDTreeWinSize=20
+let g:NERDTreeWinSize=25
+let g:NERDTreeZoomSize=50
 let g:NERDTreeShowLineNumbers=0
 let g:NERDTreeQuitOnOpen=1			"0:remain opening, 1:close
 let g:NERDChristmasTree=1
@@ -204,9 +205,9 @@ let NERDTreeShowHidden=0
 let NERDTreeKeepTreeInNewTab=0
 nmap  <leader>v :NERDTreeFind<cr>
 "*************NERD_tree****************
-map  <F2>   :NERDTreeTabsToggle<cr>
+"map  <F2>   :NERDTreeTabsToggle<cr>
 "map  <F2>   :NERDTreeMirrorToggle<CR>
-"map <F2> 	:NERDTreeToggle<CR>
+map <F2> 	:NERDTreeToggle<CR>
 "autocmd vimenter * NERDTree
 "autocmd vimenter * NERDTreeMirrorToggle
 "
@@ -327,15 +328,12 @@ let g:Powerline_symbols = 'unicode'
 
 "{{{ indentLine
 "
-let g:indentLine_loaded = 1
+"let g:indentLine_loaded = 1
 
 let g:indentLine_char = '┆'
-
 let g:indentLine_enabled = 1
-
 let g:indentLine_fileType = ['c', 'cpp']
-
-"let g:indentLine_color_term = 239
+let g:indentLine_color_term = 239
 "let g:indentLine_setConceal = 0
 "let g:indentLine_concealcursor = 'inc'
 "let g:indentLine_conceallevel = 2
@@ -807,7 +805,7 @@ set   ww=h,l
 "set   wildmenu
 "set   wildmode=list:longest,full
 "set   nowrap
-set   autochdir
+"set   autochdir
 "set   hid
 "
 "set   smarttab
