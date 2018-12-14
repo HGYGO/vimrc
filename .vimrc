@@ -224,6 +224,20 @@ let g:nerdtree_tabs_autoclose = 1
 "NERD_commenter.vim {{{
 let g:NERDShutUp=1
 let w:location=0
+let g:NERDSpaceDelims=1
+let g:NERDDefaultAlign='start'
+let g:NERDDefaultDelims={ 'left': '#' }
+
+let g:NERDAltDelims_c = 1
+
+let g:NERDCustomDelimiters = {
+    \ 'cxx': { 'left': '//', 'leftAlt': '/*', 'rightAlt': '*/' },
+    \ 'bb': { 'left': '#' },
+    \ 'bbclass': { 'left': '#' },
+    \ 'bbappend': { 'left': '#' },
+	\ 'html': { 'left': '<!-- ', 'right': '-->', 'leftAlt': '/*','rightAlt': '*/' },
+\ }
+
 "}}}
 
 ""MRU.vim {{{
